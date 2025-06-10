@@ -35,48 +35,80 @@ Services in runit live in two locations.
 
 Starting, stoping, restarting, enabling, disabling and checking status.
 
-### Enabling a service
+### Checking the Status of a Service
+
+
+
+### Enabling a Service
+
 Enabling a service means that the service will start automatically at boot. It will be started by `runsvdir`.
 
 It involves creating a symbolic link from the service definition directory (`/etc/sv`) to the service supervision directory (`/var/service`) so that `runsvdir` will start and supervise it at boot.
 
 **How it's done:**
+
 ```bash
 sudo ln -s /etc/sv/foo /var/service/
 ```
+
 + This command creates a symbolic link of the `/etc/sv/foo` service in the `/var/service/` directory.
 + At runtime, `runsvdir` detects it and starts the service.
 + At boot, `runsvidir` will start it together with every other service in the `/var/service` directory.
 
 ### Disabling a Service
+
 Disabling a service is preventing the service from automatically starting at boot. It involves removing the service's symbolic link from the service supervision directory (`/var/service`).
 
 **How it's done:**
+
 ```bash
 sudo rm /var/service/foo
 ```
+
 + This removes the symbolic link. Now, `runsvdir` won't start the `foo` service at boot.
 + Also, `runsvdir` detects that the symlink is removed and automatically stops the service.
-
 
 ### Starting a Service
 
 There are different ways of starting a service, each with different use cases and levels of persistence.
 
 1. `sv up /etc/sv/foo`:
-    + This command starts the service, `/etc/sv/foo` without adding it to `/var/service`. The service will not auto-start at boot.
+    + This command starts the service `/etc/sv/foo`, without adding it to `/var/service` (without enabling it). The service will not auto-start at boot.
     + **Note:** This command requires the full path to the service.
 
 2. `sv start foo`:
     + This command starts the `foo` service.
     + This command only works for enabled services. It assumes that the `foo` service is located in `/var/service`. This means that the command will fail if `foo` is not in `/var/service`.
-    + **Note:** This command does not require the full path to the service.
+    + **Note:** This command does not require the full path to the service, only the service name.
 
 3. `runsv /etc/sv/foo`:
     + This runs a service without needing `runsvdir`. The service is not added to `/var/service`. This service will also not auto-start at boot.
 
 ### Stopping a Service
 
+There are multiple ways of stopping a service.
+
+1. `sv down /etc/sv/foo`: This command stops the service `/etc/sv/foo`. This is used to stop services that were started by `sv up <service>`.
+    + **Note:** This command requires the full path to the service.
+
+2. `sv stop foo`:
+    + This command stops the `foo` service.
+    + Like `sv start foo`, this command only works for enabled services. It assumes the `foo` service is located in `/var/service`. This command will fail if `foo` is not in `/var/service`.
+    + The service is stopped but remains enabled.
+    + **Note:** This command does not require the full path to the service, only the service name.
+
+3. Manually kill the `runsv` process. If `sv down` fails, or if you like doing things manually, you can:
+    + Find the `runsv` PID:
+    ```bash
+    ps aux | grep runsv | grep /etc/sv/foo
+    ```
+
+    + Kill it:
+    ```bash
+    sudo kill <pid>
+    ```
+    
+    + This stops both the supervising `runsv` process, and the actual service it was running.
 
 ---
 
