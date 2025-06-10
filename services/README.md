@@ -37,7 +37,13 @@ Starting, stoping, restarting, enabling, disabling and checking status.
 
 ### Checking the Status of a Service
 
+This command is used to check if a service is running, down, supervised, or restarting:
 
+```bash
+sudo sv status foo # For enabled services.
+
+sudo sv status /etc/sv/foo # For disabled services.
+```
 
 ### Enabling a Service
 
