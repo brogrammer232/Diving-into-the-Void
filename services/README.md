@@ -15,7 +15,9 @@ A service is a background process, also called a daemon, which starts at boot or
 ---
 
 ## Service Directories
+
 Services in runit live in two locations.
+
 + `/etc/sv`: Contains all available service definitions.
 + `/var/service`: Contains enabled (active) services.
 
@@ -44,6 +46,75 @@ sudo sv status foo # For enabled services.
 
 sudo sv status /etc/sv/foo # For disabled services.
 ```
+
+#### Possible Outputs
+
+1. **Example 1**
+
+```bash
+run: sshd: (pid 1234) 2h 15m
+```
+
++ `run:` Service is running
++ `sshd:` The name of the service
++ `(pid 1234)`: Process ID of the service
++ `2h 15m`: How long it's been running
+
+2. **Example 2**
+
+```bash
+down: foo: 5s, normally up
+```
+
++ `down:` Service is down (not running).
++ `foo:` The name of the service.
++ `5s`: The service has been down for 5s.
++ `normally up`: The service is expected to be running.
+
+You may get this message if:
++ The service crashed and has not been restarted yet.
++ You manually stopped the service.
+
+3. **Example 3**
+
+```bash
+run: foo: (pid 1111) 1s, normally up; runsv: fatal: unable to start ./run: permission denied
+```
+
++ `run:` The service tried to start.
++ `foo:` The name of the service.
++ `(pid 1111)`: The PID of the process that just started.
++ `1s`: It's been running for only 1 second.
++ `normally up`: Service is expected to stay running.
++ `runsv: fatal: ...` Error message from the supervisor, it couldn't launch the service properly.
++ `unable to start ./run: permission denined`: The `run` script exists but isn't executable or readable by runit.
+
+You may see this message if:
+
++ A less privileged user owns the `run` script. It should be owned by root.
++ The file lacks the executable permission.
++ `run` is in the wrong place.
+
+4. **Example 4**
+
+```bash
+fail: foo: unable to control /var/service/foo: file does not exist
+```
+
++ `fail:` The `sv` command failed to run the service.
++ `foo:` The name of the service.
++ `unable to control /var/service/foo:` The command failed to interact with the supervision directory.
++ `file does not exist` The service is not enabled (no symlink in `/var/service`) or the path is wrong or the service if wrongly named.
+
+You'll get this if:
+
++ You forgot to `ln -s /etc/sv/foo /var/service/`.
++ You misspelled the name of the service.
++ You're trying to `sv status` a service that was only started with `sv up` and isn't currently supervised.
+
+#### What happens behind the scenes
+
+`sv status` communicates with the `runsv` process supervising the service via a UNIX domain socket in the service's directory (e.g., `/run/service/foo/supervise`). If that socket isn't there, supervision is broken or nonexistent.
 
 ### Enabling a Service
 
