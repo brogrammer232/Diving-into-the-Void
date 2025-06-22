@@ -6,9 +6,13 @@
 
 This roadmap is tailored for deep Void Linux system mastery with a long-term goal of building an Operating System. It doesn't just teach you how to *use* Void Linux, it shows you how to *understand* and eventually *replace* parts of it.
 
-## Key Topics:
+## Links
 
 + [Philosophy](#philosophy)
++ [Shell Scripting](./00_shell_scripting.md)
++ [Init System](./01_init_system.md)
+
+---
 
 ## Philosophy
 
@@ -18,3 +22,5 @@ This is covered [here](../notes/00_philosophy/README.md)
 + Know the implications of `musl` vs `glibc`.
 + Understand why `runit` was chosen over other init systems.
 + Study the [Void Handbook](https://docs.voidlinux.org/)
+
+---
