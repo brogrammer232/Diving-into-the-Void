@@ -9,8 +9,8 @@ This roadmap is tailored for deep Void Linux system mastery with a long-term goa
 ## Links
 
 + [Philosophy](#philosophy)
-+ [Shell Scripting](./00_shell_scripting.md)
-+ [Init System](./01_init_system.md)
++ [Shell Scripting](./01_shell_scripting.md)
++ [Init System](./02_init_system.md)
 
 ---
 
