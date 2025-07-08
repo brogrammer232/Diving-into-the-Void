@@ -24,3 +24,14 @@ While many tutorials cover only the basics, this roadmap is designed to go far b
 ---
 
 ## Basic Syntax and Control Structures
+
++ **Variables**: Declaration, quoting (`"$var"` vs `$var`), scope (`local`, `export`).
++ **Positional parameters**: `$0`, `"$@"`, `$#`, `$?`, `$$`.
++ **Conditionals**:
+    - `if`, `else`, `elif`, `fi`
+    - `case`, `esac`
++ **Loops**:
+    - `for`, `while`, `until`
+    - `break`, `continue`
+
+> Learn proper quoting early. Many security and logic bugs stem from misuse of quotes and whitespace handling.
